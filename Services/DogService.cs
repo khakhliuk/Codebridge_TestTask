@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Codebridge_TestTask.Data;
 using Codebridge_TestTask.Entity;
 using Codebridge_TestTask.Interfaces;
@@ -19,41 +20,53 @@ public class DogService : IDogService
         _mapper = mapper;
     }
     
-    public async Task<IEnumerable<DogResponse>> GetAllAsync()
+    public async Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync()
     {
         IEnumerable<DogResponse> dogs = _context.Dogs.Select(dog => _mapper.Map<DogResponse>(dog));
-        return await Task.FromResult(dogs);
+        
+        return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Success(dogs));
     }
 
-    public async Task<string> AddAsync(CreateDogRequest createDog, CancellationToken cancellationToken)
+    public Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync(SearchQuery searchQuery)
+    {
+        
+    }
+
+    public async Task<ResponseWrapper<string>> AddAsync(CreateDogRequest createDog, CancellationToken cancellationToken)
     {
         Dog newDog = _mapper.Map<Dog>(createDog);
+        Dog? checkDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Name == newDog.Name);
+        
+        if (checkDog != null || newDog.TailLenght < 0 || newDog.Weight < 0)
+        {
+            return await Task.FromResult(ResponseWrapper<string>.Failure(Error.BadCredentials()));
+        }
+        
         await _context.Dogs.AddAsync(newDog, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return await Task.FromResult("Created.");
+        return await Task.FromResult(ResponseWrapper<string>.Success("Created."));
     }
 
-    public async Task<string> UpdateAsync(UpdateDogRequest updateDog, CancellationToken cancellationToken)
+    public async Task<ResponseWrapper<string>> UpdateAsync(UpdateDogRequest updateDog, CancellationToken cancellationToken)
     {
         Dog modifyDog = _mapper.Map<Dog>(updateDog);
         _context.Dogs.Attach(modifyDog);
-        
         _context.Entry(modifyDog).Property(r => r.Color).IsModified = true;
         _context.Entry(modifyDog).Property(r => r.Name).IsModified = true;
         _context.Entry(modifyDog).Property(r => r.TailLenght).IsModified = true;
         _context.Entry(modifyDog).Property(r => r.Weight).IsModified = true;
         await _context.SaveChangesAsync(cancellationToken);
         
-        return await Task.FromResult("Updated.");
+        return await Task.FromResult(ResponseWrapper<string>.Success("Updated."));
     }
 
-    public async Task<string> DeleteAsync(long id, CancellationToken cancellationToken)
+    public async Task<ResponseWrapper<string>> DeleteAsync(long id, CancellationToken cancellationToken)
     {
         Dog? deleteDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Id == id, cancellationToken);
         _context.Dogs.Remove(deleteDog);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return await Task.FromResult("Deleted.");
+        return await Task.FromResult(ResponseWrapper<string>.Success("Deleted."));
     }
 }

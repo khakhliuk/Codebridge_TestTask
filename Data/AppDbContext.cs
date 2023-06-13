@@ -21,5 +21,9 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new DogConfiguration());
+        modelBuilder.Entity<Dog>().HasData(new Dog
+            { Id = 1, Name = "Neo", Color = "red & amber", TailLenght = 22, Weight = 32 });
+        modelBuilder.Entity<Dog>().HasData(new Dog
+            { Id = 2, Name = "Jessy", Color = "black & white", TailLenght = 7, Weight = 14 });
     }
 }
