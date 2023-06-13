@@ -1,8 +1,7 @@
-﻿namespace Codebridge_TestTask.Entity;
+﻿namespace Codebridge_TestTask.Models;
 
-public class Dog
+public class CreateDogRequest
 {
-    public long Id { get; set; }
     public string? Name { get; set; }
     public string? Color { get; set; }
     public int TailLenght { get; set; }
