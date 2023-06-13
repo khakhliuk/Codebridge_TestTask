@@ -16,17 +16,10 @@ public class DogController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
-    {
-        return Ok(await _dogService.GetAllAsync());
-    }
-    
-    [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromQuery] SearchQuery searchQuery)
     {
-        return Ok(await _dogService.GetAllAsync());
+        return Ok(await _dogService.GetAllAsync(searchQuery));
     }
-
 
     [HttpPost]
     [Route("/dog")]

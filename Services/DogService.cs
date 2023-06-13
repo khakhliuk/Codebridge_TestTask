@@ -20,22 +20,22 @@ public class DogService : IDogService
         _mapper = mapper;
     }
     
-    public async Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync()
+    public async Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync(SearchQuery? searchQuery)
     {
-        IEnumerable<DogResponse> dogs = _context.Dogs.Select(dog => _mapper.Map<DogResponse>(dog));
+        if (searchQuery.Attribute == null)
+        {
+            IEnumerable<DogResponse> dogs = _context.Dogs.Select(dog => _mapper.Map<DogResponse>(dog));
         
-        return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Success(dogs));
-    }
-
-    public Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync(SearchQuery searchQuery)
-    {
+            return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Success(dogs));
+        }
         
+        return ResponseWrapper<IEnumerable<DogResponse>>.Failure(Error.AlreadyExist(""));
     }
 
     public async Task<ResponseWrapper<string>> AddAsync(CreateDogRequest createDog, CancellationToken cancellationToken)
     {
         Dog newDog = _mapper.Map<Dog>(createDog);
-        Dog? checkDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Name == newDog.Name);
+        Dog? checkDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Name == newDog.Name, cancellationToken);
         
         if (checkDog != null || newDog.TailLenght < 0 || newDog.Weight < 0)
         {
