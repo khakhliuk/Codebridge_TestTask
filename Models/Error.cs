@@ -16,21 +16,21 @@ public class Error
         };
     }
 
-    public static Error AlreadyExist(string message)
+    public static Error AlreadyExist()
     {
         return new Error()
         {
-            Message = message + "already exist",
+            Message = "Already exist",
             HttpStatusCode = HttpStatusCode.UnprocessableEntity,
         };
     }
     
-    public static Error BadCredentials()
+    public static Error BadRequest()
     {
         return new Error()
         {
-            Message = "Bad Credentials",
-            HttpStatusCode = HttpStatusCode.Unauthorized,
+            Message = "Bad Request",
+            HttpStatusCode = HttpStatusCode.BadRequest,
         };
     }
 }

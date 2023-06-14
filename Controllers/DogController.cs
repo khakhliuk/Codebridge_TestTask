@@ -16,9 +16,9 @@ public class DogController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] SearchQuery searchQuery)
+    public async Task<IActionResult> GetAsync([FromQuery] SearchQuery searchQuery)
     {
-        return Ok(await _dogService.GetAllAsync(searchQuery));
+        return Ok(await _dogService.GetAsync(searchQuery));
     }
 
     [HttpPost]

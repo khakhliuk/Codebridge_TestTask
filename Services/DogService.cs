@@ -1,10 +1,8 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Codebridge_TestTask.Data;
 using Codebridge_TestTask.Entity;
 using Codebridge_TestTask.Interfaces;
 using Codebridge_TestTask.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Codebridge_TestTask.Services;
@@ -20,26 +18,54 @@ public class DogService : IDogService
         _mapper = mapper;
     }
     
-    public async Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAllAsync(SearchQuery? searchQuery)
+    public async Task<ResponseWrapper<IEnumerable<DogResponse>>> GetAsync(SearchQuery searchQuery)
     {
-        if (searchQuery.Attribute == null)
-        {
-            IEnumerable<DogResponse> dogs = _context.Dogs.Select(dog => _mapper.Map<DogResponse>(dog));
+        IEnumerable<DogResponse> dogs;
+        int pageNumber = (searchQuery.PageNumber < 1 || searchQuery.PageNumber > 10) ? 1 : searchQuery.PageNumber;
+        int size = (searchQuery.Size < 1 || searchQuery.Size > 10) ? 10 : searchQuery.Size;
+        int startFrom = (pageNumber - 1) * size;
         
-            return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Success(dogs));
+        if (startFrom >= _context.Dogs.Count())
+        {
+            return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Failure(Error.BadRequest()));
         }
         
-        return ResponseWrapper<IEnumerable<DogResponse>>.Failure(Error.AlreadyExist(""));
+        if (searchQuery.Attribute == null)
+        {
+            dogs = _context.Dogs.Skip(startFrom)
+                .Take(size)
+                .Select(dog => _mapper.Map<DogResponse>(dog));
+        }
+        else
+        {
+            if (searchQuery.Order == "desc")
+            {
+                dogs = _context.Dogs.OrderByDescending(dog => EF.Property<object>(dog, searchQuery.Attribute))
+                    .Skip(startFrom)
+                    .Take(size)
+                    .Select(dog => _mapper.Map<DogResponse>(dog));
+            }
+            else
+            {
+                dogs = _context.Dogs.OrderBy(dog => EF.Property<object>(dog, searchQuery.Attribute))
+                    .Skip(startFrom)
+                    .Take(size)
+                    .Select(dog => _mapper.Map<DogResponse>(dog));
+            }
+        }
+
+        return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Success(dogs));
     }
 
     public async Task<ResponseWrapper<string>> AddAsync(CreateDogRequest createDog, CancellationToken cancellationToken)
     {
         Dog newDog = _mapper.Map<Dog>(createDog);
-        Dog? checkDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Name == newDog.Name, cancellationToken);
+        Dog? checkDog = await _context.Dogs
+            .FirstOrDefaultAsync(dog => dog.Name == newDog.Name, cancellationToken);
         
         if (checkDog != null || newDog.TailLenght < 0 || newDog.Weight < 0)
         {
-            return await Task.FromResult(ResponseWrapper<string>.Failure(Error.BadCredentials()));
+            return await Task.FromResult(ResponseWrapper<string>.Failure(Error.BadRequest()));
         }
         
         await _context.Dogs.AddAsync(newDog, cancellationToken);
@@ -63,7 +89,14 @@ public class DogService : IDogService
 
     public async Task<ResponseWrapper<string>> DeleteAsync(long id, CancellationToken cancellationToken)
     {
-        Dog? deleteDog = await _context.Dogs.FirstOrDefaultAsync(dog => dog.Id == id, cancellationToken);
+        Dog? deleteDog = await _context.Dogs
+            .FirstOrDefaultAsync(dog => dog.Id == id, cancellationToken);
+
+        if (deleteDog == null)
+        {
+            return await Task.FromResult(ResponseWrapper<string>.Failure(Error.BadRequest()));
+        }
+        
         _context.Dogs.Remove(deleteDog);
         await _context.SaveChangesAsync(cancellationToken);
         
