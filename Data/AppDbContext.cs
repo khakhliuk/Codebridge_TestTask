@@ -1,12 +1,13 @@
 ﻿using Codebridge_TestTask.Data.Configuration;
 using Codebridge_TestTask.Entity;
+using Codebridge_TestTask.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Codebridge_TestTask.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IAppDbContext
 {
-    public DbSet<Dog> Dogs => Set<Dog>();
+    public DbSet<Dog> Dogs { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

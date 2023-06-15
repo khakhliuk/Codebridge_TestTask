@@ -18,7 +18,14 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Moq" Version="4.18.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="TestTask.Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestTask.Tests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestTask.Tests\obj\TestTask.Tests.csproj.nuget.dgspec.json" />
     </ItemGroup>
 
 </Project>

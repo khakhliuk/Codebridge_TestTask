@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codebridge_TestTask", "Codebridge_TestTask.csproj", "{4F77B780-9D50-40C3-82B6-4A32B2B1689D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTask.Tests", "TestTask.Tests\TestTask.Tests.csproj", "{66D18C5F-7541-4983-B4C0-F234C9BD5872}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4F77B780-9D50-40C3-82B6-4A32B2B1689D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F77B780-9D50-40C3-82B6-4A32B2B1689D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F77B780-9D50-40C3-82B6-4A32B2B1689D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D18C5F-7541-4983-B4C0-F234C9BD5872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D18C5F-7541-4983-B4C0-F234C9BD5872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D18C5F-7541-4983-B4C0-F234C9BD5872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D18C5F-7541-4983-B4C0-F234C9BD5872}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -9,10 +9,10 @@ namespace Codebridge_TestTask.Services;
 
 public class DogService : IDogService
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
     private readonly IMapper _mapper;
     
-    public DogService(AppDbContext context, IMapper mapper)
+    public DogService(IAppDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

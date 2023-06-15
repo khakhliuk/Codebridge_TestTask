@@ -8,9 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(o =>
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAutoMapper(
-    typeof(DogMappingProfile));
-
+builder.Services.AddTransient<IAppDbContext, AppDbContext>();
+builder.Services.AddAutoMapper(typeof(DogMappingProfile));
 builder.Services.AddScoped<IDogService, DogService>();
 
 builder.Services.AddControllers();
