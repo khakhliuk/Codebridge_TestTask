@@ -33,4 +33,19 @@ public class Error
             HttpStatusCode = HttpStatusCode.BadRequest,
         };
     }
+
+    public override int GetHashCode()
+    {
+        HashCode hashCode = new ();
+        hashCode.Add(Message);
+        hashCode.Add(HttpStatusCode);
+        return hashCode.ToHashCode();
+    }
+    
+    public override bool Equals(object? obj)
+    {
+        return obj is Error other &&
+               Message == other.Message &&
+               HttpStatusCode == other.HttpStatusCode;
+    }
 }

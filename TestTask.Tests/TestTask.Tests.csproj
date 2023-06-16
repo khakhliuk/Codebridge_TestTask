@@ -19,11 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Service" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Codebridge_TestTask.csproj" />
+      <ProjectReference Include="..\TestTask\Codebridge_TestTask.csproj" />
     </ItemGroup>
 
 </Project>

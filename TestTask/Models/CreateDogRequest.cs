@@ -1,6 +1,6 @@
 ﻿namespace Codebridge_TestTask.Models;
 
-public class CreateDogRequest
+public record CreateDogRequest
 {
     public string? Name { get; set; }
     public string? Color { get; set; }

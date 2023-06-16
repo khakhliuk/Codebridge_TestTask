@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection;
+using AutoMapper;
 using Codebridge_TestTask.Data;
 using Codebridge_TestTask.Entity;
 using Codebridge_TestTask.Interfaces;
@@ -38,6 +39,11 @@ public class DogService : IDogService
         }
         else
         {
+            if (new Dog().GetType().GetProperty(searchQuery.Attribute) == null)
+            {
+                return await Task.FromResult(ResponseWrapper<IEnumerable<DogResponse>>.Failure(Error.BadRequest()));
+            }
+            
             if (searchQuery.Order == "desc")
             {
                 dogs = _context.Dogs.OrderByDescending(dog => EF.Property<object>(dog, searchQuery.Attribute))

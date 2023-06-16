@@ -1,6 +1,6 @@
-﻿namespace Codebridge_TestTask.Entity;
+﻿namespace Codebridge_TestTask.Models;
 
-public class Dog
+public record UpdateDogRequest
 {
     public long Id { get; set; }
     public string? Name { get; set; }
